@@ -1,0 +1,56 @@
+
+
+/*  
+    Arduino with PIR motion sensor
+    For complete project details, visit: http://RandomNerdTutorials.com/pirsensor
+    Modified by Rui Santos based on PIR sensor by Limor Fried
+*/
+#include <Servo.h>
+Servo servoku;
+Servo servota;
+
+int led = 13;                // the pin that the LED is atteched to
+int sensor = 2;              // the pin that the sensor is atteched to
+int state = LOW;             // by default, no motion detected
+int val = 0;                 // variable to store the sensor status (value)
+
+void setup() {
+  servoku.attach(9);
+  servota.attach(10);
+   delay (50);
+   servoku.write(0); 
+  servota.write(120);
+ 
+  pinMode(led, OUTPUT);      // initalize LED as an output
+  pinMode(sensor, INPUT);    // initialize sensor as an input
+  Serial.begin(9600);        // initialize serial
+  
+}
+
+void loop(){
+  val = digitalRead(sensor);   // read sensor value
+  if (val == HIGH) {           // check if the sensor is HIGH
+   servoku.write(120);
+  servota.write(0);
+    digitalWrite(led, HIGH);   // turn LED ON
+    delay(7000);                // delay 100 milliseconds 
+    
+    if (state == LOW) {
+      Serial.println("Motion detected!"); 
+      state = HIGH;       // update variable state to HIGH
+    }
+  } 
+  else {
+    servoku.write(0); 
+  servota.write(120);
+      digitalWrite(led, LOW); // turn LED OFF
+      delay(20);             // delay 200 milliseconds 
+      
+      if (state == HIGH){
+        Serial.println("Motion stopped!");
+        state = LOW;       // update variable state to LOW
+    }
+  }
+}
+
+
